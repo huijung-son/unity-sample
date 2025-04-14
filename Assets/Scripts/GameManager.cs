@@ -5,7 +5,14 @@ public class GameManager : MonoBehaviour
 {
     private Player player;
     private Machine nowHitMachineSC = null;
-    private MenuCanvas menuCanvasSC = null;
+    private Vector3 cameraOffset = Vector3.zero;
+    private GameObject mainCamera = null;
+    
+    private void OnEnable()
+    {
+        Player.playerTriggerEnter += PlayerTriggerEnterManager;
+        Player.playerTriggerExit += PlayerTriggerExitManager;
+    }
     
     private void Awake()
     {
@@ -13,6 +20,9 @@ public class GameManager : MonoBehaviour
         GameObject gameObjectplayer = GameObject.Find("Player");
         gameObjectplayer.AddComponent<Player>();
         player = gameObjectplayer.GetComponent<Player>();
+        
+        // 카메라 세팅
+        mainCamera = GameObject.Find("Main Camera");
         
         // 자판기 세팅
         GameObject machinePrefab = Resources.Load<GameObject>("Prefabs\\PMachine");
@@ -22,30 +32,26 @@ public class GameManager : MonoBehaviour
         Quaternion machineRotation = Quaternion.identity;
         GameObject cloneMachine = Instantiate(machinePrefab, machinePosition, machineRotation);
         cloneMachine.AddComponent<Machine>();
-        
-        // 메뉴 캔버스 세팅
-        GameObject menuCanvas = GameObject.Find("MenuCanvas");
-        menuCanvas.AddComponent<MenuCanvas>();
-        menuCanvasSC = menuCanvas.GetComponent<MenuCanvas>();
-        menuCanvasSC.gameObject.SetActive(false);
+    }
+    
+    private void Start()
+    {
+        cameraOffset = mainCamera.transform.position - player.transform.position;
     }
 
-    private void OnEnable()
-    {
-        Player.playerTriggerEnter += PlayerTriggerEnterManager;
-        Player.playerTriggerExit += PlayerTriggerExitManager;
-    }
-
-    private void OnDisable()
-    {
-        Player.playerTriggerEnter -= PlayerTriggerEnterManager;
-        Player.playerTriggerExit -= PlayerTriggerExitManager;
-    }
 
     private void Update()
     {
         player.Moving();
+        player.MovingWithMouse();
+        FollowCamera();
         OnMenu();
+    }
+    
+    private void OnDisable()
+    {
+        Player.playerTriggerEnter -= PlayerTriggerEnterManager;
+        Player.playerTriggerExit -= PlayerTriggerExitManager;
     }
 
     private void PlayerTriggerEnterManager(Collider other)
@@ -64,21 +70,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void FollowCamera()
+    {
+        mainCamera.transform.position = player.transform.position + cameraOffset;
+    }
+
     private void OnMenu()
     {
         if (nowHitMachineSC != null && Input.GetKeyDown(KeyCode.E))
         {
-            menuCanvasSC.gameObject.SetActive(true);
-            Transform btntran = menuCanvasSC.transform.Find("Button");
-            if (btntran != null)
-            {
-                GameObject btnGo = btntran.gameObject;
-                Button btn = btnGo.GetComponent<Button>();
-                btn.onClick.AddListener(() =>
-                {
-                    menuCanvasSC.gameObject.SetActive(false);
-                });
-            }
+            
         }
     }
 }
