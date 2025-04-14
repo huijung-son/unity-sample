@@ -2,30 +2,27 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public delegate void TriggerEventHandler(GameObject player, Collider other);
-    public static event TriggerEventHandler OnPlayerTriggerEnterEvent;
-    public static event TriggerEventHandler OnPlayerTriggerExitEvent;
+    public delegate void PlayertriggerDelegate(Collider other);
+    public static event PlayertriggerDelegate playerTriggerEnter;
+    public static event PlayertriggerDelegate playerTriggerExit;
     
-    private readonly float _speed = 10f;
+    private float speed = 15f;
     
-    // 기능 : 움직인다
     public void Moving()
     {
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
-        Vector3 moveDir = new Vector3(h, 0, v);
-        this.transform.Translate( _speed * Time.deltaTime * moveDir);
-    }
-    
-    // 이벤트 : 콜라이더 접근
-    private void OnTriggerEnter(Collider other)
-    {
-        OnPlayerTriggerEnterEvent?.Invoke(gameObject, other);
+        Vector3 movement = new Vector3(h, 0, v);
+        transform.Translate(speed * Time.deltaTime * movement);
     }
 
-    // 이벤트 : 콜라이더 해제
+    private void OnTriggerEnter(Collider other)
+    {
+        playerTriggerEnter?.Invoke(other);
+    }
+
     private void OnTriggerExit(Collider other)
     {
-        OnPlayerTriggerExitEvent?.Invoke(gameObject, other);
+        playerTriggerExit?.Invoke(other);
     }
 }

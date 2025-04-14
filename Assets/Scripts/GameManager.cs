@@ -1,79 +1,84 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    private Player _scriptPlayer;
-    private GameObject _prefabMachine;
-    private GameObject _gameObjectMachineManager;
+    private Player player;
+    private Machine nowHitMachineSC = null;
+    private MenuCanvas menuCanvasSC = null;
     
+    private void Awake()
+    {
+        // 플레이어 세팅
+        GameObject gameObjectplayer = GameObject.Find("Player");
+        gameObjectplayer.AddComponent<Player>();
+        player = gameObjectplayer.GetComponent<Player>();
+        
+        // 자판기 세팅
+        GameObject machinePrefab = Resources.Load<GameObject>("Prefabs\\PMachine");
+        Vector3 machinePosition = machinePrefab.transform.position;
+        machinePosition.x = 3f;
+        machinePosition.z = 3f;
+        Quaternion machineRotation = Quaternion.identity;
+        GameObject cloneMachine = Instantiate(machinePrefab, machinePosition, machineRotation);
+        cloneMachine.AddComponent<Machine>();
+        
+        // 메뉴 캔버스 세팅
+        GameObject menuCanvas = GameObject.Find("MenuCanvas");
+        menuCanvas.AddComponent<MenuCanvas>();
+        menuCanvasSC = menuCanvas.GetComponent<MenuCanvas>();
+        menuCanvasSC.gameObject.SetActive(false);
+    }
+
     private void OnEnable()
     {
-        Player.OnPlayerTriggerEnterEvent += HandlePlayerTriggerEnter;
-        Player.OnPlayerTriggerExitEvent += HandlePlayerTriggerExit;
+        Player.playerTriggerEnter += PlayerTriggerEnterManager;
+        Player.playerTriggerExit += PlayerTriggerExitManager;
     }
 
     private void OnDisable()
     {
-        Player.OnPlayerTriggerEnterEvent -= HandlePlayerTriggerEnter;
-        Player.OnPlayerTriggerExitEvent -= HandlePlayerTriggerExit;
-    }
-    
-    private void Awake()
-    {
-        // 플레이어 초기세팅
-        this.InitPlayer();
-        this.InitMachineManager();
-        this.InitMachine();
+        Player.playerTriggerEnter -= PlayerTriggerEnterManager;
+        Player.playerTriggerExit -= PlayerTriggerExitManager;
     }
 
     private void Update()
     {
-        // 플레이어의 무빙
-        this._scriptPlayer.Moving();
+        player.Moving();
+        OnMenu();
     }
 
-    // Awake
-    private void InitPlayer()
+    private void PlayerTriggerEnterManager(Collider other)
     {
-        GameObject gameObjectplayer = GameObject.Find("Player");
-        gameObjectplayer.AddComponent<Player>();
-        this._scriptPlayer = gameObjectplayer.GetComponent<Player>();
-    }
-
-    private void InitMachineManager()
-    {
-        _gameObjectMachineManager = GameObject.Find("MachineManager");
-    }
-
-    private void InitMachine()
-    {
-        this._prefabMachine = Resources.Load<GameObject>("Prefabs\\PMachine");
-        for (int i = 0; i < 5; ++i)
+        if (other.CompareTag("Machine"))
         {
-            Quaternion q = new Quaternion(0f, 0f, 0f, 0f);
-            Vector3 pos = this._prefabMachine.transform.position;
-            pos.x = Random.Range(-15f, 15f);
-            pos.z = Random.Range(-15f, 15f);
-            GameObject cloneMachine = Instantiate(this._prefabMachine, pos, q);
-            cloneMachine.AddComponent<Machine>();
-            cloneMachine.transform.SetParent(_gameObjectMachineManager.transform);
+            nowHitMachineSC = other.GetComponent<Machine>();
         }
     }
     
-    // Player
-    private void HandlePlayerTriggerEnter(GameObject player, Collider other)
+    private void PlayerTriggerExitManager(Collider other)
     {
         if (other.CompareTag("Machine"))
         {
-            other.GetComponent<Machine>().Interaction();
+            nowHitMachineSC = null;
         }
     }
 
-    private void HandlePlayerTriggerExit(GameObject player, Collider other)
+    private void OnMenu()
     {
-        if (other.CompareTag("Machine"))
+        if (nowHitMachineSC != null && Input.GetKeyDown(KeyCode.E))
         {
-            other.GetComponent<Machine>().Interaction();
+            menuCanvasSC.gameObject.SetActive(true);
+            Transform btntran = menuCanvasSC.transform.Find("Button");
+            if (btntran != null)
+            {
+                GameObject btnGo = btntran.gameObject;
+                Button btn = btnGo.GetComponent<Button>();
+                btn.onClick.AddListener(() =>
+                {
+                    menuCanvasSC.gameObject.SetActive(false);
+                });
+            }
         }
     }
 }
