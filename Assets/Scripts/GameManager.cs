@@ -1,17 +1,29 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    private Player player;
-    private Machine nowHitMachineSC = null;
-    private Vector3 cameraOffset = Vector3.zero;
-    private GameObject mainCamera = null;
+    // 플레이어 스크립트 컴포넌트
+    private Player _player;
+    // 카메라 세팅시 오프셋
+    private Vector3 _cameraOffset = Vector3.zero;
+    // 메인 카메라 오브젝트
+    private GameObject _mainCamera;
+    // 몬스터 스크립트 컴포넌트
+    private GameObject _monsterPrefab;
+    // 몬스터 스폰 거리
+    private float _spawnDist = 40f;
+    // 스폰 시간
+    private float _spawnTimer = 0f;
+    // 총알
+    private GameObject _bulletPrefab;
     
     private void OnEnable()
     {
-        Player.playerTriggerEnter += PlayerTriggerEnterManager;
-        Player.playerTriggerExit += PlayerTriggerExitManager;
+        Player.PlayerTriggerEnter += PlayerTriggerEnterManager;
+        Player.PlayerTriggerExit += PlayerTriggerExitManager;
+        
+        Monster.MonsterTriggerEnter += MonsterTriggerEnterManager;
     }
     
     private void Awake()
@@ -19,67 +31,92 @@ public class GameManager : MonoBehaviour
         // 플레이어 세팅
         GameObject gameObjectplayer = GameObject.Find("Player");
         gameObjectplayer.AddComponent<Player>();
-        player = gameObjectplayer.GetComponent<Player>();
+        _player = gameObjectplayer.GetComponent<Player>();
         
         // 카메라 세팅
-        mainCamera = GameObject.Find("Main Camera");
+        _mainCamera = GameObject.Find("Main Camera");
         
-        // 자판기 세팅
-        GameObject machinePrefab = Resources.Load<GameObject>("Prefabs\\PMachine");
-        Vector3 machinePosition = machinePrefab.transform.position;
-        machinePosition.x = 3f;
-        machinePosition.z = 3f;
-        Quaternion machineRotation = Quaternion.identity;
-        GameObject cloneMachine = Instantiate(machinePrefab, machinePosition, machineRotation);
-        cloneMachine.AddComponent<Machine>();
+        // 몬스터 프리팹
+        _monsterPrefab = Resources.Load<GameObject>("Prefabs/PMonster");
+        
+        // 총알 프리팹
+        _bulletPrefab = Resources.Load<GameObject>("Prefabs/PBullet");
     }
     
     private void Start()
     {
-        cameraOffset = mainCamera.transform.position - player.transform.position;
+        _cameraOffset = _mainCamera.transform.position - _player.transform.position;
     }
-
 
     private void Update()
     {
-        player.Moving();
-        player.MovingWithMouse();
+        _player.Moving();
+        //player.MovingWithMouse(); 주석 풀면 버그 있음
+        _player.LookAtMouse();
         FollowCamera();
-        OnMenu();
+        _spawnTimer += Time.deltaTime;
+        if (_spawnTimer >= 1f)
+        {
+            SpawnMonster();
+            _spawnTimer = 0f;
+        }
+
+        ShootCoroutine();
     }
     
     private void OnDisable()
     {
-        Player.playerTriggerEnter -= PlayerTriggerEnterManager;
-        Player.playerTriggerExit -= PlayerTriggerExitManager;
+        Player.PlayerTriggerEnter -= PlayerTriggerEnterManager;
+        Player.PlayerTriggerExit -= PlayerTriggerExitManager;
+        
+        Monster.MonsterTriggerEnter -= MonsterTriggerEnterManager;
     }
 
     private void PlayerTriggerEnterManager(Collider other)
     {
-        if (other.CompareTag("Machine"))
-        {
-            nowHitMachineSC = other.GetComponent<Machine>();
-        }
+        
     }
     
     private void PlayerTriggerExitManager(Collider other)
     {
-        if (other.CompareTag("Machine"))
-        {
-            nowHitMachineSC = null;
-        }
+        
+    }
+
+    private void MonsterTriggerEnterManager(Collider other, Monster monster)
+    {
+        Destroy(other.gameObject);
     }
 
     private void FollowCamera()
     {
-        mainCamera.transform.position = player.transform.position + cameraOffset;
+        _mainCamera.transform.position = _player.transform.position + _cameraOffset;
     }
 
-    private void OnMenu()
+    private void SpawnMonster()
     {
-        if (nowHitMachineSC != null && Input.GetKeyDown(KeyCode.E))
+        GameObject monster = Instantiate(_monsterPrefab);
+        float theta = Random.Range(0f, 360f);
+        Vector3 pos = new Vector3(Mathf.Cos(theta), 0f, Mathf.Sin(theta)) * _spawnDist;
+        monster.transform.position = pos;
+        monster.AddComponent<Monster>();
+        Monster monsterScript = monster.GetComponent<Monster>();
+        monsterScript.TargetPlayer = _player;
+    }
+    
+    // 기본 평타 무기 온
+    private IEnumerator ShootCoroutine()
+    {
+        while (true)
         {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = transform.position.z;
+            Vector3 mousePoint = Camera.main.ScreenToWorldPoint(mousePos);
+            Vector3 dir = mousePoint - _player.transform.position;
+            dir.Normalize();
             
+            GameObject bulletPrefab = Instantiate(_bulletPrefab);
+            bulletPrefab.transform.position = _player.transform.position;
+            yield return new WaitForSeconds(1f);
         }
     }
 }
