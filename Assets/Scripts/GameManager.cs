@@ -23,8 +23,11 @@ namespace SonGame
         {
             while (true)
             {
+                Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                dir.z = 0;
+                bullet.dir = dir.normalized;
                 WeaponsProcess clone = Instantiate(bullet, player.transform.position, Quaternion.identity);
-                Destroy(clone, 5f);
+                Destroy(clone.gameObject, 5f);
                 yield return clone.wait;
             }
         }
@@ -33,7 +36,7 @@ namespace SonGame
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                bullet.process += 1;
+                WeaponsProcess.process += 1;
             }
         }
     }

@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class WeaponsProcess : MonoBehaviour
 {
-    public WaitForSeconds wait = new WaitForSeconds(0.5f);
     public enum Process
     {
         Default, Double
     }
-    public Process process = Process.Default;
+    public static Process process = Process.Default;
     private delegate void UpdateProcessDelegate();
     private UpdateProcessDelegate updateProcess;
+    // 총알스펙
+    public WaitForSeconds wait;
+    public Vector3 dir = Vector3.up;
+    private float speed = 2f;
     
     private void Awake()
     {
@@ -17,9 +20,19 @@ public class WeaponsProcess : MonoBehaviour
         {
             case Process.Default:
                 updateProcess = DefaultShoot;
+                speed = 2f;
+                wait = new WaitForSeconds(1f);
                 break;
             case Process.Double:
-                updateProcess = DoubleShoot;
+                updateProcess = FastShoot;
+                speed = 4f;
+                wait = new WaitForSeconds(0.2f);
+                break;
+            default:
+                process = Process.Default;
+                updateProcess = DefaultShoot;
+                speed = 2f;
+                wait = new WaitForSeconds(1f);
                 break;
         }
     }
@@ -31,11 +44,16 @@ public class WeaponsProcess : MonoBehaviour
 
     private void DefaultShoot()
     {
-        transform.position += 2f * Time.deltaTime * transform.up;
+        transform.position += speed * Time.deltaTime * dir;
     }
 
-    private void DoubleShoot()
+    private void FastShoot()
     {
-        transform.position += 2f * Time.deltaTime * transform.right;
+        transform.position += speed * Time.deltaTime * dir;
+    }
+
+    private void TwistShoot()
+    {
+        
     }
 }
