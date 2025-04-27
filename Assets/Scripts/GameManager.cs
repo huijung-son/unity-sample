@@ -28,10 +28,28 @@ namespace SonGame
             while (true)
             {
                 Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                dir.Normalize();
                 dir.z = 0;
-                bullet.dir = dir.normalized;
+                bullet.dir = dir;
                 WeaponsProcess clone = Instantiate(bullet, player.transform.position, Quaternion.identity);
                 Destroy(clone.gameObject, 5f);
+                if (WeaponsProcess.process == WeaponsProcess.Process.Shotgun)
+                {
+                    float th = 10f * Mathf.Deg2Rad;
+                    bullet.dir = new Vector3(
+                        dir.x * Mathf.Cos(th) - dir.y * Mathf.Sin(th), 
+                        dir.x * Mathf.Sin(th) + dir.y * Mathf.Cos(th), 
+                        0f);
+                    WeaponsProcess clone2 = Instantiate(bullet, player.transform.position, Quaternion.identity);
+                    Destroy(clone2.gameObject, 5f);
+                    
+                    bullet.dir = new Vector3(
+                        dir.x * Mathf.Cos(-th) - dir.y * Mathf.Sin(-th), 
+                        dir.x * Mathf.Sin(-th) + dir.y * Mathf.Cos(-th), 
+                        0f);
+                    WeaponsProcess clone3 = Instantiate(bullet, player.transform.position, Quaternion.identity);         
+                    Destroy(clone3.gameObject, 5f);
+                }
                 yield return clone.wait;
             }
         }

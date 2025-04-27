@@ -6,12 +6,16 @@ public class WeaponsProcess : MonoBehaviour
     {
         Default, Double, Twist, Shotgun, Circle
     }
-    public static Process process = Process.Twist;
-    private delegate void UpdateProcessDelegate();
-    private UpdateProcessDelegate updateProcess;
-    // 총알스펙
+    public static Process process = Process.Circle;
     public WaitForSeconds wait;
     public Vector3 dir = Vector3.up;
+    
+    /// <summary>
+    ///
+    /// </summary>
+    
+    private delegate void UpdateProcessDelegate();
+    private UpdateProcessDelegate updateProcess;
     private float speed = 2f;
     
     private void Awake()
@@ -20,13 +24,13 @@ public class WeaponsProcess : MonoBehaviour
         {
             case Process.Default:
                 updateProcess = DefaultShoot;
-                speed = 2f;
+                speed = 3f;
                 wait = new WaitForSeconds(1f);
                 break;
             case Process.Double:
                 updateProcess = FastShoot;
-                speed = 3f;
-                wait = new WaitForSeconds(0.5f);
+                speed = 10f;
+                wait = new WaitForSeconds(0.1f);
                 break;
             case Process.Twist:
                 updateProcess = TwistShoot;
@@ -35,18 +39,18 @@ public class WeaponsProcess : MonoBehaviour
                 break;
             case Process.Shotgun:
                 updateProcess = ShotgunShoot;
-                speed = 4f;
-                wait = new WaitForSeconds(0.3f);
+                speed = 20f;
+                wait = new WaitForSeconds(1.5f);
                 break;
             case Process.Circle:
                 updateProcess = CircleShoot;
-                speed = 4f;
+                speed = 10f;
                 wait = new WaitForSeconds(0.3f);
                 break;
             default:
                 process = Process.Default;
                 updateProcess = DefaultShoot;
-                speed = 2f;
+                speed = 3f;
                 wait = new WaitForSeconds(1f);
                 break;
         }
@@ -80,6 +84,6 @@ public class WeaponsProcess : MonoBehaviour
 
     private void CircleShoot()
     {
-        transform.position += speed * Time.deltaTime * dir;
+        
     }
 }
