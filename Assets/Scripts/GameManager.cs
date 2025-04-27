@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 namespace SonGame
@@ -7,11 +8,14 @@ namespace SonGame
     {
         private Player player;
         private WeaponsProcess bullet;
-
+        private TextMeshProUGUI text;
+        
         private void Awake()
         {
             player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
             bullet = Resources.Load<WeaponsProcess>("Prefabs/Bullet");
+            text = GameObject.Find("Canvas").GetComponentInChildren<TextMeshProUGUI>();
+            text.text = WeaponsProcess.process.ToString();
         }
 
         private void Start()
@@ -37,6 +41,7 @@ namespace SonGame
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 WeaponsProcess.process += 1;
+                text.text = WeaponsProcess.process.ToString();
             }
         }
     }

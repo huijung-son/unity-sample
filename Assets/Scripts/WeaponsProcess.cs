@@ -4,9 +4,9 @@ public class WeaponsProcess : MonoBehaviour
 {
     public enum Process
     {
-        Default, Double
+        Default, Double, Twist, Shotgun, Circle
     }
-    public static Process process = Process.Default;
+    public static Process process = Process.Twist;
     private delegate void UpdateProcessDelegate();
     private UpdateProcessDelegate updateProcess;
     // 총알스펙
@@ -25,8 +25,23 @@ public class WeaponsProcess : MonoBehaviour
                 break;
             case Process.Double:
                 updateProcess = FastShoot;
+                speed = 3f;
+                wait = new WaitForSeconds(0.5f);
+                break;
+            case Process.Twist:
+                updateProcess = TwistShoot;
                 speed = 4f;
-                wait = new WaitForSeconds(0.2f);
+                wait = new WaitForSeconds(0.3f);
+                break;
+            case Process.Shotgun:
+                updateProcess = ShotgunShoot;
+                speed = 4f;
+                wait = new WaitForSeconds(0.3f);
+                break;
+            case Process.Circle:
+                updateProcess = CircleShoot;
+                speed = 4f;
+                wait = new WaitForSeconds(0.3f);
                 break;
             default:
                 process = Process.Default;
@@ -54,6 +69,17 @@ public class WeaponsProcess : MonoBehaviour
 
     private void TwistShoot()
     {
-        
+        Vector3 pos = dir + new Vector3(Mathf.Sin(Time.time), 0f, 0f);
+        transform.position += speed * Time.deltaTime * pos.normalized;
+    }
+
+    private void ShotgunShoot()
+    {
+        transform.position += speed * Time.deltaTime * dir;
+    }
+
+    private void CircleShoot()
+    {
+        transform.position += speed * Time.deltaTime * dir;
     }
 }
