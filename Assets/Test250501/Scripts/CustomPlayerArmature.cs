@@ -3,11 +3,13 @@ using UnityEngine;
 public class CustomPlayerArmature : MonoBehaviour
 {
     private Animator animator;
-    public Transform target;
+    private GameObject target = null;
+    private bool lookAt = false;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
+        target = GameObject.FindGameObjectWithTag("TargetOther");
     }
     
     private void Update()
@@ -19,7 +21,13 @@ public class CustomPlayerArmature : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            animator.SetLayerWeight(1, 1f);
+            lookAt = !lookAt;
+            animator.SetLayerWeight(1, lookAt ? 1f : 0f);
+        }
+        
+        if (target != null && lookAt)
+        {
+            transform.LookAt(target.transform);
         }
     }
 
