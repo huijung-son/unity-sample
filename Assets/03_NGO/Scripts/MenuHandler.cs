@@ -4,11 +4,11 @@ using UnityEngine.SceneManagement;
 
 namespace Son
 {
-    public class MenuObject : MonoBehaviour
+    public class MenuHandler : MonoBehaviour
     {
         public void OnStartClient()
         {
-            if (NetworkManager.Singleton.StartClient())
+            if (!NetworkManager.Singleton.IsListening && NetworkManager.Singleton.StartClient())
             {
                 NetworkManager.Singleton.SceneManager.OnSceneEvent += CallSceneEvent;
             }
@@ -16,27 +16,22 @@ namespace Son
 
         public void OnStartHost()
         {
-            if (NetworkManager.Singleton.StartHost())
+            if (!NetworkManager.Singleton.IsListening && NetworkManager.Singleton.StartHost())
             {
                 NetworkManager.Singleton.SceneManager.OnSceneEvent += CallSceneEvent;
             }
         }
 
-        public void OnNextScene()
+        public void OnNextScene(string sceneName)
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("NGONextScene", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         }
         
         private void CallSceneEvent(SceneEvent e)
         {
             if (!NetworkManager.Singleton.IsServer) return;
             
-            Debug.Log("CallSceneEvent");
-            
-            if (e.SceneEventType == SceneEventType.SynchronizeComplete)
-            {
-                Debug.Log("e.SceneEventType == SceneEventType.SynchronizeComplete");
-            }
+            Debug.Log($"CallSceneEvent {e.SceneEventType}");
         }
     }
 }

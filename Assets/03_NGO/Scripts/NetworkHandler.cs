@@ -5,35 +5,37 @@ namespace Son
 {
     public class NetworkHandler : MonoBehaviour
     {
-        [SerializeField] private GameObject playerPrefab;
         [SerializeField] private int maxPlayers = 4;
+        
+        private NetworkManager networkManager;
         
         private void Awake()
         {
-            DontDestroyOnLoad(gameObject);
+            networkManager = GetComponent<NetworkManager>();
         }
 
-        private void Start()
+        private void OnEnable()
         {
-            Debug.Log("Start");
-            NetworkManager.Singleton.ConnectionApprovalCallback += CallApprovalCheck;
-            NetworkManager.Singleton.OnClientConnectedCallback += CallClientConnectedCallback;
+            Debug.Log("OnEnable");
+            networkManager.ConnectionApprovalCallback = CallApprovalCheck;
+            networkManager.OnClientConnectedCallback += CallClientConnectedCallback;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            Debug.Log("OnDestroy");
-            NetworkManager.Singleton.ConnectionApprovalCallback -= CallApprovalCheck;
-            NetworkManager.Singleton.OnClientConnectedCallback -= CallClientConnectedCallback;
+            Debug.Log("OnDisable");
+            networkManager.ConnectionApprovalCallback = null;
+            networkManager.OnClientConnectedCallback -= CallClientConnectedCallback;
         }
-        
+
         private void CallApprovalCheck(
             NetworkManager.ConnectionApprovalRequest request, 
             NetworkManager.ConnectionApprovalResponse response
         )
         {
             Debug.Log("CallApprovalCheck");
-            if (NetworkManager.Singleton.ConnectedClientsIds.Count >= maxPlayers)
+            
+            if (networkManager.ConnectedClientsIds.Count >= maxPlayers)
             {
                 response.Approved = false;
                 response.Reason   = "Room is full.";
@@ -47,8 +49,7 @@ namespace Son
 
         private void CallClientConnectedCallback(ulong clientId)
         {
-            Debug.Log("CallClientConnectedCallback");
+            Debug.Log($"CallClientConnectedCallback {clientId}");
         }
     }
 }
-
