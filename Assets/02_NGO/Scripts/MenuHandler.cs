@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace Son
 {
     public class MenuHandler : MonoBehaviour
     {
+        [SerializeField] private TextMeshProUGUI tmp;
+        
         private UdpClient udp;
         private UnityTransport utp;
         private IPEndPoint address = new IPEndPoint(IPAddress.Any, 0);
@@ -57,6 +60,7 @@ namespace Son
             if (listeningTime > 3)
             {
                 listeningTime = 0;
+                
                 if (!NetworkManager.Singleton.IsListening)
                 {
                     Receive();
@@ -124,6 +128,7 @@ namespace Son
             try
             {
                 byte[] bytes = udp.Receive(ref address);
+                tmp.text = Encoding.UTF8.GetString(bytes);
                 Debug.Log($"[Receive] Remote IpEndPoint : {address.ToString()} Size : {bytes.Length} byte");
             }
             catch (Exception ex)
