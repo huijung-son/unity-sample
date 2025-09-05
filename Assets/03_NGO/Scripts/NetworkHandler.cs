@@ -1,4 +1,9 @@
+using System.Collections;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 
 namespace Son
@@ -8,10 +13,16 @@ namespace Son
         [SerializeField] private int maxPlayers = 4;
         
         private NetworkManager networkManager;
+        private UnityTransport utp;
+        private UdpClient udp;
+        private IPEndPoint remoteAddress;
         
         private void Awake()
         {
             networkManager = GetComponent<NetworkManager>();
+            utp = networkManager.GetComponent<UnityTransport>();
+            udp = new UdpClient(utp.ConnectionData.Port);
+            remoteAddress = new IPEndPoint(IPAddress.Any, utp.ConnectionData.Port);
         }
 
         private void OnEnable()
@@ -26,6 +37,23 @@ namespace Son
             Debug.Log("OnDisable");
             networkManager.ConnectionApprovalCallback = null;
             networkManager.OnClientConnectedCallback -= CallClientConnectedCallback;
+            
+            udp.Close();
+        }
+
+        private void Start()
+        {
+            byte[] sendBytes = Encoding.UTF8.GetBytes("son");
+            udp.Send(
+                sendBytes,
+                sendBytes.Length,
+                utp.ConnectionData.Address, 
+                utp.ConnectionData.Port
+                );
+            
+            byte[] data = udp.Receive(ref remoteAddress);
+            Debug.Log($"Received {remoteAddress.Address} {remoteAddress.Port} {Encoding.UTF8.GetString(data)}");
+            // StartCoroutine(UdpListening());
         }
 
         private void CallApprovalCheck(

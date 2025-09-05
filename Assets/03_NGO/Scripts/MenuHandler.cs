@@ -1,4 +1,7 @@
+using System;
+using System.Net.Sockets;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +13,7 @@ namespace Son
         {
             if (!NetworkManager.Singleton.IsListening && NetworkManager.Singleton.StartClient())
             {
+                NetworkManager.Singleton.SceneManager.OnSceneEvent -= CallSceneEvent;
                 NetworkManager.Singleton.SceneManager.OnSceneEvent += CallSceneEvent;
             }
         }
@@ -18,6 +22,7 @@ namespace Son
         {
             if (!NetworkManager.Singleton.IsListening && NetworkManager.Singleton.StartHost())
             {
+                NetworkManager.Singleton.SceneManager.OnSceneEvent -= CallSceneEvent;
                 NetworkManager.Singleton.SceneManager.OnSceneEvent += CallSceneEvent;
             }
         }
