@@ -6,10 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/03_NGO/Scenes/NGOScene.unity
+    path: Assets/02_NGO/Scenes/NGOScene.unity
     guid: ba57b982f148a4e73a9771279ed1ecd9
   - enabled: 1
-    path: Assets/03_NGO/Scenes/NGONextScene.unity
+    path: Assets/02_NGO/Scenes/NGONextScene.unity
     guid: fcf402ebfcbc140ab95ded8e17ae6e5e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
