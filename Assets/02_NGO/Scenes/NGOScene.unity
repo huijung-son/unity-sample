@@ -940,7 +940,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1270674423}
-  - component: {fileID: 1270674424}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -963,18 +962,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1270674424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1270674422}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b607f84fe40864ff9a89eae62e92ec79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Son.GameSystemManager
 --- !u!1 &1410185489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,7 +1106,6 @@ GameObject:
   - component: {fileID: 1766855383}
   - component: {fileID: 1766855384}
   - component: {fileID: 1766855385}
-  - component: {fileID: 1766855386}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -1213,19 +1199,6 @@ MonoBehaviour:
     PacketDelayMS: 0
     PacketJitterMS: 0
     PacketDropRate: 0
---- !u!114 &1766855386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1766855379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0508dedb6b25e44e8a910275381f5e41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Son.NetworkHandler
-  maxPlayers: 4
 --- !u!1 &2021322840
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,7 +1276,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -1340,10 +1313,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2021322840}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4800ea751d6464398b5221e98fa60a38, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a76ccd0c6aacc6439abe538fc34cc2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Son.MenuHandler
-  tmp: {fileID: 0}
+  tmp: {fileID: 510108563}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
