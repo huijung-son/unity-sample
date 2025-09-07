@@ -16,7 +16,7 @@ namespace Son
         
         private UdpClient udp;
         private UnityTransport utp;
-        private IPEndPoint address = new IPEndPoint(IPAddress.Any, 0);
+        private IPEndPoint address = new IPEndPoint(IPAddress.Broadcast, 47777);
         private float listeningTime = 0f;
         
         private void OnEnable()
@@ -50,7 +50,9 @@ namespace Son
         private void Start()
         {
             utp = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            
             udp = new UdpClient(47777);
+            udp.EnableBroadcast = true; 
             udp.Client.Blocking = false;
         }
 
@@ -71,8 +73,7 @@ namespace Son
                     udp.Send(
                         sendBytes,
                         sendBytes.Length,
-                        utp.ConnectionData.Address, 
-                        utp.ConnectionData.Port
+                        address
                     );
                 }
             }

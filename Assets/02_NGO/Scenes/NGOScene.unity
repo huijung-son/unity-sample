@@ -1145,7 +1145,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1766855385}
-    PlayerPrefab: {fileID: 6778024823394851135, guid: 3336fc12816f65f40a33cc34c85b6b6f, type: 3}
+    PlayerPrefab: {fileID: 6778024823394851135, guid: 87a75739c53654b60ad02dd8506b6c52, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 7843d3ef7b9a64279a8bce7987878c51, type: 2}
@@ -1209,7 +1209,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1766855379}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ffbce640a02bc5c48954cf67f83d3e5f, type: 3}
+  m_Script: {fileID: 11500000, guid: 0508dedb6b25e44e8a910275381f5e41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Son.NetworkHandler
   maxPlayers: 4
@@ -1327,7 +1327,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2021322840}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a76ccd0c6aacc6439abe538fc34cc2c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4800ea751d6464398b5221e98fa60a38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Son.MenuHandler
   tmp: {fileID: 510108563}
