@@ -93,7 +93,7 @@ namespace Son
             if (!NetworkManager.Singleton.IsListening)
             {
                 // string localIP = GetInternalIP();
-                utp.SetConnectionData("127.0.0.1", utp.ConnectionData.Port, "192.168.0.11");
+                utp.SetConnectionData("127.0.0.1", utp.ConnectionData.Port, "192.168.0.5");
                 
                 if (NetworkManager.Singleton.StartHost())
                 {

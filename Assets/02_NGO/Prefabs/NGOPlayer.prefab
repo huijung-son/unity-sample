@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3578519492
+  GlobalObjectIdHash: 1968943408
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6778024823394851135}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5017f6c28600045a997e73b0a98c456a, type: 3}
+  m_Script: {fileID: 11500000, guid: a9b2381a1a32f944ca98821507f2ed8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NGOPlayer
   ShowTopMostFoldoutHeaderGroup: 1
