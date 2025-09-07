@@ -50,7 +50,7 @@ namespace Son
         private void Start()
         {
             utp = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            udp = new UdpClient(utp.ConnectionData.Port);
+            udp = new UdpClient();
             udp.Client.Blocking = false;
         }
 
@@ -89,10 +89,16 @@ namespace Son
 
         public void OnStartHost()
         {
-            if (!NetworkManager.Singleton.IsListening && NetworkManager.Singleton.StartHost())
+            if (!NetworkManager.Singleton.IsListening)
             {
-                NetworkManager.Singleton.SceneManager.OnSceneEvent -= CallSceneEvent;
-                NetworkManager.Singleton.SceneManager.OnSceneEvent += CallSceneEvent;
+                // string localIP = GetInternalIP();
+                utp.SetConnectionData("127.0.0.1", utp.ConnectionData.Port, "192.168.0.11");
+                
+                if (NetworkManager.Singleton.StartHost())
+                {
+                    NetworkManager.Singleton.SceneManager.OnSceneEvent -= CallSceneEvent;
+                    NetworkManager.Singleton.SceneManager.OnSceneEvent += CallSceneEvent;
+                }
             }
         }
 
