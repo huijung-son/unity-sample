@@ -16,7 +16,7 @@ namespace Son
         
         private UdpClient udp;
         private UnityTransport utp;
-        private IPEndPoint address = new IPEndPoint(IPAddress.Broadcast, 47777);
+        private IPEndPoint address = new IPEndPoint(IPAddress.Any, 47777);
         private float listeningTime = 0f;
         
         private void OnEnable()
