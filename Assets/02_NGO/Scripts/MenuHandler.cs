@@ -50,7 +50,7 @@ namespace Son
         private void Start()
         {
             utp = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            udp = new UdpClient();
+            udp = new UdpClient(47777);
             udp.Client.Blocking = false;
         }
 
