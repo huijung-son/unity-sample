@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using TMPro;
@@ -17,6 +18,7 @@ namespace Son
         private UdpClient udp;
         private UnityTransport utp;
         private IPEndPoint address = new IPEndPoint(IPAddress.Any, 47777);
+        private IPEndPoint sendEP;
         private float listeningTime = 0f;
         
         private void OnEnable()
@@ -46,6 +48,25 @@ namespace Son
                 udp = null;
             }
         }
+        
+        private IPAddress GetSubnetBroadcast()
+        {
+            foreach (var nic in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (nic.OperationalStatus != OperationalStatus.Up) continue;
+                var ipProps = nic.GetIPProperties();
+                foreach (var ua in ipProps.UnicastAddresses)
+                {
+                    if (ua.Address.AddressFamily != AddressFamily.InterNetwork) continue;
+                    var ip = ua.Address.GetAddressBytes();
+                    var mask = ua.IPv4Mask.GetAddressBytes();
+                    var bc = new byte[4];
+                    for (int i = 0; i < 4; i++) bc[i] = (byte)(ip[i] | ~mask[i]);
+                    return new IPAddress(bc);
+                }
+            }
+            return IPAddress.Broadcast; // 폴백
+        }
 
         private void Start()
         {
@@ -54,6 +75,9 @@ namespace Son
             udp = new UdpClient(47777);
             udp.EnableBroadcast = true; 
             udp.Client.Blocking = false;
+            
+            var bc = GetSubnetBroadcast();              // 예: 192.168.0.255
+            sendEP = new IPEndPoint(bc, 47777);
         }
 
         private void LateUpdate()
@@ -73,7 +97,7 @@ namespace Son
                     udp.Send(
                         sendBytes,
                         sendBytes.Length,
-                        address
+                        sendEP
                     );
                 }
             }
